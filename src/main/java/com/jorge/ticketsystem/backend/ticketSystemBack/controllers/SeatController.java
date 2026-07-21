@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 
 @RestController
-@RequestMapping("/seats")
+@RequestMapping("/api/v1//seats")
 @CrossOrigin(origins = "http://localhost:5173")
 @RequiredArgsConstructor
 public class SeatController {

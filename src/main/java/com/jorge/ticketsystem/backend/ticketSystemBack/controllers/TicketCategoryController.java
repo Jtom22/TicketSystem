@@ -23,7 +23,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/ticketCategory")
+@RequestMapping("/api/v1/ticketCategory")
 @CrossOrigin(origins = "http://localhost:5173")
 @RequiredArgsConstructor
 public class TicketCategoryController {
@@ -35,7 +35,7 @@ public class TicketCategoryController {
     public ResponseEntity<TicketCategoryResponseDto> create(
             @PathVariable Long eventId, 
             @Valid @RequestBody TicketCategoryCreateDto dto) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(categoryService.save(eventId, dto));
+        return ResponseEntity.status(HttpStatus.CREATED).body(categoryService.create(eventId, dto));
     }
 
     // Listar todas las categorías de un evento específico

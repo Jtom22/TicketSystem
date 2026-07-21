@@ -27,7 +27,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 
 @RestController
-@RequestMapping("/events")
+@RequestMapping("/api/v1/events")
 @CrossOrigin(origins = "http://localhost:5173")
 @RequiredArgsConstructor
 public class EventController {
@@ -51,7 +51,7 @@ public class EventController {
     @PostMapping()
     public ResponseEntity<EventResponseDto>create(@Valid @RequestBody EventCreateDto event ){
        
-        return ResponseEntity.status(HttpStatus.CREATED).body(eventService.save(event));
+        return ResponseEntity.status(HttpStatus.CREATED).body(eventService.create(event));
     }
 
 @PutMapping("/{id}")

@@ -1,6 +1,7 @@
 package com.jorge.ticketsystem.backend.ticketSystemBack.services;
 
 
+import com.jorge.ticketsystem.backend.ticketSystemBack.repositories.TicketCategoryRepository;
 import java.util.List;
 
 import java.util.stream.Collectors;
@@ -12,7 +13,7 @@ import com.jorge.ticketsystem.backend.ticketSystemBack.dto.event.EventResponseDt
 import com.jorge.ticketsystem.backend.ticketSystemBack.dto.event.EventUpdateDto;
 
 import com.jorge.ticketsystem.backend.ticketSystemBack.entities.Event;
-
+import com.jorge.ticketsystem.backend.ticketSystemBack.entities.TicketCategory;
 import com.jorge.ticketsystem.backend.ticketSystemBack.mappers.EventMapper;
 import com.jorge.ticketsystem.backend.ticketSystemBack.repositories.EventRepository;
 
@@ -26,8 +27,11 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class EventServiceImpl implements EventService {
 
+    private final TicketCategoryRepository ticketCategoryRepository;
     private final EventRepository repository;
     private final EventMapper eventMapper;
+
+
 
     @Override
     @Transactional
@@ -58,10 +62,14 @@ public class EventServiceImpl implements EventService {
 
     @Override
     @Transactional
-    public EventResponseDto save(EventCreateDto eventDto) {
+    public EventResponseDto create(EventCreateDto eventDto) {
         // Event event = new Event();
         // event.setTitle(eventDto.title());
         // event.setArtist(eventDto.artist());
+
+        //Falta comprobar si existe el ticket para este evento
+        // TicketCategory= ticketCategoryRepository.findBy
+
         Event event = eventMapper.toEntity(eventDto);
         // ... mapea el resto de campos que tenga tu EventCreateDto ...
         repository.save(event);

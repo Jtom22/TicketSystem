@@ -17,7 +17,7 @@ public interface TicketCategoryService {
     TicketCategoryResponseDto findById(Long id);
     
     // Recibe DTO de creación -> Devuelve DTO de respuesta
-    TicketCategoryResponseDto save(Long eventId,TicketCategoryCreateDto createDto);
+    TicketCategoryResponseDto create(Long eventId,TicketCategoryCreateDto createDto);
     
     // Recibe ID de la URL + DTO de actualización -> Devuelve DTO de respuesta
     TicketCategoryResponseDto update(Long id, TicketCategoryUpdateDto updateDto);

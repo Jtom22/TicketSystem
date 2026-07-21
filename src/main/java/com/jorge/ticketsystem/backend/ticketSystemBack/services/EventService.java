@@ -12,7 +12,7 @@ public interface EventService {
 
     EventResponseDto findById(Long id);
 
-    EventResponseDto save(EventCreateDto event);
+    EventResponseDto create(EventCreateDto event);
 
     EventResponseDto update(Long id, EventUpdateDto dto);
 

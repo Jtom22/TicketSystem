@@ -62,7 +62,7 @@ public class TicketCategoryServiceImpl implements TicketCategoryService {
     }
 
     @Override
-    public TicketCategoryResponseDto save(Long eventId, TicketCategoryCreateDto createDto) {
+    public TicketCategoryResponseDto create(Long eventId, TicketCategoryCreateDto createDto) {
         if (!eventRepository.existsById(eventId)) {
             throw new EntityNotFoundException("No existe el evento con id " + eventId);
         }
