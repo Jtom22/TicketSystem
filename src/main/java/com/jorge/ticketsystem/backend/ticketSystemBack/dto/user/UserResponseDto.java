@@ -4,9 +4,11 @@ package com.jorge.ticketsystem.backend.ticketSystemBack.dto.user;
 
 public record UserResponseDto(
 
-     String email,
+    String fullName,
+    String email,
     String password,
-    boolean enabled
+    boolean enabled,
+    String roleId
 ) {
 
 }

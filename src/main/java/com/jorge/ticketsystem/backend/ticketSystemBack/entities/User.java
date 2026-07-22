@@ -31,12 +31,8 @@ public class User extends Auditable{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String full_name;
-    @NotBlank(message = "El email no puede estar vacío")
     private String email;
-    @Size(min = 6, message = "La contraseña debe tener al menos 6 caracteres")
     private String password;
-
-    @Column(name = "enabled", columnDefinition = "TINYINT(1)")
     private boolean enabled;
 
 

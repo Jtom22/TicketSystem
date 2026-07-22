@@ -6,13 +6,14 @@ import jakarta.validation.constraints.Size;
 
 public record UserUpdateDto (
 
-    @NotBlank(message = "El email no puede estar vacío")
-    String email,
-    @Size(min = 6, message = "La contraseña debe tener al menos 6 caracteres")
-    String password,
+    String fullName, // Opcional
 
-    @Column(name = "enabled", columnDefinition = "TINYINT(1)")
-    boolean enabled
+    @Size(min = 6, message = "Si se actualiza la contraseña, debe tener al menos 6 caracteres")
+    String password, // Opcional
+
+    Boolean enabled, // Opcional (Usamos Boolean objeto para que pueda llegar null si no se envía)
+
+    Long roleId // Opcional
 
 ) {}
 
