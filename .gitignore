@@ -1,6 +1,20 @@
+
+
+# Compilados de Maven
 /target/
+
+# Archivos de configuración de tu IDE
 /build/
 .gradle/
 .idea/
 .vscode/
 *.class
+.settings/
+.classpath
+.project
+
+# El archivo con las credenciales reales
+src/main/resources/application.properties
+
+# Sistema operativo
+.DS_Store
