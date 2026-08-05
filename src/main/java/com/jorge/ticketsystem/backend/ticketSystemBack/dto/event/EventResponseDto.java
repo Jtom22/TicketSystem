@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 
 public record EventResponseDto(
 
+    Long id,
     String title,
     String artist,
     String venueName,

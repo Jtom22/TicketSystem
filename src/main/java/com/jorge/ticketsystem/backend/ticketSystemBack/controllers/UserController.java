@@ -13,13 +13,14 @@ import com.jorge.ticketsystem.backend.ticketSystemBack.dto.user.UserCreateDto;
 import com.jorge.ticketsystem.backend.ticketSystemBack.dto.user.UserResponseDto;
 import com.jorge.ticketsystem.backend.ticketSystemBack.dto.user.UserUpdateDto;
 import com.jorge.ticketsystem.backend.ticketSystemBack.services.UserService;
+import com.jorge.ticketsystem.backend.ticketSystemBack.services.UserServiceImpl;
 
 @RestController
 @RequestMapping("/api/v1/users")
 @RequiredArgsConstructor
 public class UserController {
 
-    private final UserService userService;
+    private final UserServiceImpl userService;
 
     /**
      * 1. CREAR O REACTIVAR UN USUARIO
