@@ -23,7 +23,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class IssuedTicketServiceImpl implements IssuedTicketService {
 
-    private final IssuedTicketUpdateDto issuedTicketUpdateDto;
+
 
     private final IssuedTicketRepository issuedTicketRepository;
 

@@ -1,5 +1,6 @@
 package com.jorge.ticketsystem.backend.ticketSystemBack.services;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
@@ -13,6 +14,7 @@ import com.jorge.ticketsystem.backend.ticketSystemBack.dto.user.UserUpdateDto;
 import com.jorge.ticketsystem.backend.ticketSystemBack.entities.Role;
 import com.jorge.ticketsystem.backend.ticketSystemBack.entities.User;
 import com.jorge.ticketsystem.backend.ticketSystemBack.mappers.UserMapper;
+import com.jorge.ticketsystem.backend.ticketSystemBack.repositories.RoleRepository;
 import com.jorge.ticketsystem.backend.ticketSystemBack.repositories.UserRepository;
 
 import jakarta.persistence.EntityExistsException;
@@ -24,6 +26,7 @@ import lombok.RequiredArgsConstructor;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final RoleRepository roleRepository; // 1. Inyectamos RoleRepository
     private final UserMapper userMapper;
 
     @Transactional
@@ -31,6 +34,7 @@ public class UserService {
         
        Optional<User> existingUserOpt = userRepository.findByEmail(dto.email());
 
+       List<Role> roles = roleRepository.findAllById(dto.roleIds());
     if (existingUserOpt.isPresent()) {
         User existingUser = existingUserOpt.get();
 
@@ -45,10 +49,7 @@ public class UserService {
         existingUser.setPassword(dto.password());
         existingUser.setEnabled(true); // ⬅️ Lo volvemos a dar de alta
         
-        // Mapeamos el nuevo Rol
-        Role newRole = new Role();
-        newRole.setId(dto.roleId());
-        existingUser.setRole(newRole);
+        existingUser.setRoles(roles);
 
         return userMapper.toResponseDto(userRepository.save(existingUser));
     }

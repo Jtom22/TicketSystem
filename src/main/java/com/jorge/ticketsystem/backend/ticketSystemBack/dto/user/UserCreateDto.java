@@ -1,8 +1,11 @@
 package com.jorge.ticketsystem.backend.ticketSystemBack.dto.user;
 
 
+import java.util.List;
+
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
@@ -19,8 +22,8 @@ public record UserCreateDto(
     @Size(min = 6, message = "La contraseña debe tener al menos 6 caracteres")
     String password,
 
-    @NotNull(message = "El ID de rol es obligatorio")
-    Long roleId // Mapeará al objeto Role interno
+    @NotEmpty(message = "Debes asignar al menos un rol al usuario") // <- Lista no nula y no vacía
+    List<Long> roleIds // <- Lista de IDs de roles
 
 ) {}
 

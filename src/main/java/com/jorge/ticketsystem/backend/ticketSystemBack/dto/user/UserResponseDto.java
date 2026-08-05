@@ -1,6 +1,6 @@
 package com.jorge.ticketsystem.backend.ticketSystemBack.dto.user;
 
-
+import java.util.List;
 
 public record UserResponseDto(
 
@@ -8,7 +8,7 @@ public record UserResponseDto(
     String email,
     String password,
     boolean enabled,
-    String roleId
+    List<String> roles
 ) {
 
 }

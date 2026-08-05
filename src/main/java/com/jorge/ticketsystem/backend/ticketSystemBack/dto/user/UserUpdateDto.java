@@ -1,5 +1,7 @@
 package com.jorge.ticketsystem.backend.ticketSystemBack.dto.user;
 
+import java.util.List;
+
 import jakarta.persistence.Column;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -13,7 +15,7 @@ public record UserUpdateDto (
 
     Boolean enabled, // Opcional (Usamos Boolean objeto para que pueda llegar null si no se envía)
 
-    Long roleId // Opcional
+    List<Long> roleIds // <- Nueva lista de roles para actualizar Opcional
 
 ) {}
 
