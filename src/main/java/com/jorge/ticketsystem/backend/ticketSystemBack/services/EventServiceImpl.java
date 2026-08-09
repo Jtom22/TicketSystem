@@ -70,8 +70,11 @@ public class EventServiceImpl implements EventService {
         //Falta comprobar si existe el ticket para este evento
         // TicketCategory= ticketCategoryRepository.findBy
 
-        Event event = eventMapper.toEntity(eventDto);
+        //Creamos el evento desde el dto de crear
         // ... mapea el resto de campos que tenga tu EventCreateDto ...
+        Event event = eventMapper.toEntity(eventDto);
+        
+        //Guardamos el dto
         repository.save(event);
         return eventMapper.toResponseDto(event);
         
