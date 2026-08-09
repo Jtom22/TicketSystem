@@ -23,10 +23,11 @@ public interface UserMapper {
 
     // 1. De DTO de Creación a Entidad (POST)
 
-    @Mapping(target = "email", ignore = true)
+
     @Mapping(target = "roles", ignore = true) // O deja que MapStruct mapee List<Role> -> List<String> / List<RoleDto>
     @Mapping(target = "full_name", source = "fullName")
-    @Mapping(target = "enabled", constant = "true") 
+    @Mapping(target = "enabled", constant = "true")
+    @Mapping(target = "password", ignore = true) 
     User toEntity(UserCreateDto dto);
 
 
