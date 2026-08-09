@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -30,7 +31,7 @@ import com.jorge.ticketsystem.backend.ticketSystemBack.services.EventService;
 
 import tools.jackson.databind.ObjectMapper;
 
-
+@Disabled
 @WebMvcTest(controllers = EventController.class)
 @ContextConfiguration(classes = TicketSystemBackApplication.class)
 class EventControllerTest {

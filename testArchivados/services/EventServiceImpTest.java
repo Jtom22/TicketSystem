@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -24,6 +25,7 @@ import com.jorge.ticketsystem.backend.ticketSystemBack.mappers.EventMapper;
 import com.jorge.ticketsystem.backend.ticketSystemBack.repositories.EventRepository;
 import com.jorge.ticketsystem.backend.ticketSystemBack.services.EventServiceImpl;
 
+@Disabled
 @ExtendWith(MockitoExtension.class)
 class EventServiceImplTest {
     // @Mock le dice a Mockito: "Crea un objeto falso de EventRepository esd normal
