@@ -26,7 +26,7 @@ import com.jorge.ticketsystem.backend.ticketSystemBack.repositories.UserReposito
 
 @Service
 @RequiredArgsConstructor // Genera el constructor para la inyección de dependencias (Reemplaza a @Autowired)
-public class OrderServiceImpl {
+public class OrderServiceImpl implements OrderService {
 
     private final OrderRepository orderRepository;
     private final OrderMapper orderMapper;

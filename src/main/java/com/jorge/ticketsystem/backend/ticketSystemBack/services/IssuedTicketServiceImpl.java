@@ -67,6 +67,7 @@ public class IssuedTicketServiceImpl implements IssuedTicketService {
         // 4. Inyectamos los objetos relacionales validados a nuestra entidad
     ticketEntity.setOrder(orden);
     ticketEntity.setSeat(asiento);
+    issuedTicketRepository.save(ticketEntity);
     
     // 5. Guardamos de forma segura en MySQL
     IssuedTicket guardado = issuedTicketRepository.save(ticketEntity);

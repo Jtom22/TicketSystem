@@ -30,7 +30,8 @@ public class Seat extends Auditable{
     private String seat_number;
     
     @Enumerated(EnumType.STRING)
-    private SeatStatus status;
+    private SeatStatus status= SeatStatus.DISPONIBLE;
+    
     @Version
     private int version;
 

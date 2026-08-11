@@ -4,7 +4,7 @@ import java.util.List;
 
 public record UserResponseDto(
 
-    Long Id,
+    Long id,
     String fullName,
     String email,
     boolean enabled,

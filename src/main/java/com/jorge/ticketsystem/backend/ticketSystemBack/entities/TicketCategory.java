@@ -1,5 +1,7 @@
 package com.jorge.ticketsystem.backend.ticketSystemBack.entities;
 
+import java.math.BigDecimal;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -22,7 +24,7 @@ public class TicketCategory extends Auditable{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-    private int price;
+    private BigDecimal price;
     private int capacity;
     
     @ManyToOne
