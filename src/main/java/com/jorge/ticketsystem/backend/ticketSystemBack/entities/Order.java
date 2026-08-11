@@ -1,5 +1,6 @@
 package com.jorge.ticketsystem.backend.ticketSystemBack.entities;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 
@@ -25,11 +26,11 @@ public class Order extends Auditable{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private int total_amount;
+    private BigDecimal total_amount;
 
     @Enumerated(EnumType.STRING)
     private OrderStatus status;
-    
+
     private LocalDateTime expires_at;
 
     @ManyToOne

@@ -28,7 +28,7 @@ public class IssuedTicket extends Auditable{
     private Order order;
 
     @ManyToOne
-    @JoinColumn(name = "seat_id", nullable=false)
+    @JoinColumn(name = "seat_id", nullable=false, unique = true)
     private Seat seat;
 
 

@@ -16,5 +16,8 @@
 # El archivo con las credenciales reales
 src/main/resources/application.properties
 
+#ClasesInteresantes para guardar
+src/testArchivados
+
 # Sistema operativo
 .DS_Store

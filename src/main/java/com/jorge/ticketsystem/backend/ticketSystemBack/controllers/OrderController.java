@@ -22,6 +22,7 @@ import com.jorge.ticketsystem.backend.ticketSystemBack.dto.order.OrderUpdateDto;
 import com.jorge.ticketsystem.backend.ticketSystemBack.entities.Order;
 import com.jorge.ticketsystem.backend.ticketSystemBack.repositories.OrderRepository;
 import com.jorge.ticketsystem.backend.ticketSystemBack.services.OrderService;
+import com.jorge.ticketsystem.backend.ticketSystemBack.services.OrderServiceImpl;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -30,7 +31,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class OrderController {
 
-    private final OrderService orderService;
+    private final OrderServiceImpl orderService;
 
 
 

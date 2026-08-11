@@ -33,11 +33,12 @@ public class SeatServiceImpl implements SeatService{
         if (!seatRepository.existsById(idTkCategory)) {
             throw new EntityNotFoundException("No existe el tipo de categoria de id "+idTkCategory);
         }
+        
 
         Seat seat= seatMapper.toEntity(createDto);//Transformamos nuestro dto en entidad
         seat.setTicketCategory(ticketCategoryRepository.getReferenceById(idTkCategory));//Asociamos la relación mediante una referencia Proxy eficiente->el proxy:ticketCategoryRepository.getReferenceById(idTkCategory)
 
-        //Aqui guardamos el asiento el asiento en la bbdd
+        //Aqui guardamos el asiento en la bbdd
         // Seat savedSeat= seatRepository.save(seat); lo incluimos directamente abajo
 
         return seatMapper.toResponseDto(seatRepository.save(seat)); //Retornamos el DTO de salida mapeado con su ID y @Version asignados

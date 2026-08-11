@@ -57,7 +57,7 @@ public class EventServiceImpl implements EventService {
     public EventResponseDto findById(Long id) {
         return repository.findById(id)
                 .map(eventMapper::toResponseDto)
-                .orElseThrow(()->new EntityNotFoundException("Evento no encontrado")); // Llama al repositorio nativo de Spring Data JPA
+                .orElseThrow(()->new EntityNotFoundException("Evento no encontrado con id " + id)); // Llama al repositorio nativo de Spring Data JPA
     }
 
     @Override
