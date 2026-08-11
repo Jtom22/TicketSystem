@@ -6,6 +6,7 @@ public enum OrderStatus {
     EN_PROCESO,
     COMPLETADO,
     CANCELADO,
-    FALLIDO
+    FALLIDO,
+    EXPIRADO
 
 }

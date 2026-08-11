@@ -14,9 +14,13 @@ import org.springframework.web.context.request.WebRequest;
 
 import com.jorge.ticketsystem.backend.ticketSystemBack.dto.error.ApiErrorResponse;
 
+import io.swagger.v3.oas.annotations.Hidden;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 
+
+//
+@Hidden
 @RestControllerAdvice // 👈 Le dice a Spring: "Vigila todos los controladores de la app"
 public class GlobalExceptionHandler {
 

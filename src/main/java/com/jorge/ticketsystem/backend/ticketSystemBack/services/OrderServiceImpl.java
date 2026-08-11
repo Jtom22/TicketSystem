@@ -4,6 +4,8 @@ package com.jorge.ticketsystem.backend.ticketSystemBack.services;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 
+import java.time.LocalDateTime;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
@@ -14,6 +16,7 @@ import com.jorge.ticketsystem.backend.ticketSystemBack.dto.order.OrderCreateDto;
 import com.jorge.ticketsystem.backend.ticketSystemBack.dto.order.OrderResponseDto;
 import com.jorge.ticketsystem.backend.ticketSystemBack.dto.order.OrderUpdateDto;
 import com.jorge.ticketsystem.backend.ticketSystemBack.entities.Order;
+import com.jorge.ticketsystem.backend.ticketSystemBack.entities.OrderStatus;
 import com.jorge.ticketsystem.backend.ticketSystemBack.entities.Seat;
 import com.jorge.ticketsystem.backend.ticketSystemBack.entities.SeatStatus;
 import com.jorge.ticketsystem.backend.ticketSystemBack.exception.SeatConflictException;
@@ -27,6 +30,12 @@ import com.jorge.ticketsystem.backend.ticketSystemBack.repositories.UserReposito
 @Service
 @RequiredArgsConstructor // Genera el constructor para la inyección de dependencias (Reemplaza a @Autowired)
 public class OrderServiceImpl implements OrderService {
+
+        
+    // Minutos que dura una reserva antes de expirar. Fijo aquí, no lo decide
+    // el cliente — así nadie puede mandar una fecha de expiración a su gusto.
+    private static final long MINUTOS_RESERVA = 10;
+
 
     private final OrderRepository orderRepository;
     private final OrderMapper orderMapper;
@@ -55,6 +64,10 @@ public class OrderServiceImpl implements OrderService {
         }
  
         Order order = orderMapper.toEntity(dto);
+        // El estado inicial y la duración de la reserva los decide el servidor,
+        // nunca el cliente (ver el porqué en OrderCreateDto).
+        order.setStatus(OrderStatus.PENDIENTE);
+        order.setExpires_at(LocalDateTime.now().plusMinutes(MINUTOS_RESERVA));
         Order savedOrder = orderRepository.save(order);
  
         for (Long seatId : dto.seatIds()) {
