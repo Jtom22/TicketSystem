@@ -2,45 +2,45 @@
 
 API REST para la venta de entradas a eventos (conciertos, en principio), construida con Spring Boot. Gestiona el catálogo de eventos, sus categorías de entrada, los asientos individuales, el proceso de compra con reserva temporal, y la emisión final de los tickets.
 
-Proyecto personal de aprendizaje — backend funcional de punta a punta; el frontend está en desarrollo.
+Backend funcional, el frontend está en desarrollo.
 
 ---
 
 ## Índice
 
-- [Qué hace el sistema](#qué-hace-el-sistema)
-- [Stack técnico](#stack-técnico)
-- [Arquitectura](#arquitectura)
-- [Modelo de datos](#modelo-de-datos)
-- [El flujo de compra, explicado](#el-flujo-de-compra-explicado)
-- [Seguridad](#seguridad)
-- [Cómo levantarlo en local](#cómo-levantarlo-en-local)
-- [Endpoints principales](#endpoints-principales)
-- [Documentación interactiva (Swagger)](#documentación-interactiva-swagger)
-- [Estado del proyecto](#estado-del-proyecto)
+-1  Qué hace el sistema
+-2  Stack técnico
+-3  Arquitectura
+-4  Modelo de datos
+-5  El flujo de compra, explicado
+-6  Seguridad
+-7  Cómo levantarlo en local
+-8  Endpoints principales
+-9  Documentación interactiva (Swagger)
+-10 Estado del proyecto
 
 ---
 
 ## Qué hace el sistema
 
-- Cualquiera puede **ver el catálogo de eventos** y sus categorías de entrada, sin necesidad de cuenta.
-- Un usuario registrado puede **reservar asientos concretos** de una categoría (por ejemplo, "VIP" o "General"), dentro de un pedido.
-- Esa reserva es **temporal**: mientras dura, nadie más puede coger esos asientos. Si el usuario no completa la compra a tiempo, el sistema libera los asientos automáticamente.
-- Al confirmarse el pedido, se **emite el ticket** definitivo para cada asiento comprado.
+- Cualquiera puede ver el "catálogo de eventos" y sus categorías de entrada, sin necesidad de cuenta.
+- Un usuario registrado puede "reservar asientos concretos" de una categoría (por ejemplo, "VIP" o "General"), dentro de un pedido.
+- Esa reserva es temporal y los deja como no seleccionables para el resto de usuarios. Si el usuario no completa la compra a tiempo (10 min), el sistema libera los asientos automáticamente cada minuto.
+- Al confirmarse el pedido, se emite el ticket definitivo para cada asiento comprado.
 - Un administrador gestiona el catálogo (crear eventos, categorías, asientos) y los usuarios del sistema.
 
 ## Stack técnico
 
 | Categoría | Tecnología |
 |---|---|
-| Lenguaje | Java 21 |
-| Framework | Spring Boot 4.1 |
-| Persistencia | Spring Data JPA (Hibernate) + MySQL |
-| Seguridad | Spring Security + JWT (JJWT) |
-| Mapeo DTO ↔ Entidad | MapStruct |
-| Reducción de boilerplate | Lombok |
-| Documentación de API | springdoc-openapi (Swagger UI) |
-| Build | Maven |
+| Lenguaje -> Java 21 |
+| Framework -> Spring Boot 4.1 |
+| Persistencia -> Spring Data JPA (Hibernate) + MySQL |
+| Seguridad -> Spring Security + JWT (JJWT) |
+| Mapeo DTO ↔ Entidad -> MapStruct |
+| Reducción de boilerplate -> Lombok |
+| Documentación de API -> springdoc-openapi (Swagger UI) |
+| Build -> Maven |
 
 *(Ver [`TECNOLOGIAS.md`](./TECNOLOGIAS.md) para una explicación detallada de cada una y de cómo encajan entre sí.)*
 
