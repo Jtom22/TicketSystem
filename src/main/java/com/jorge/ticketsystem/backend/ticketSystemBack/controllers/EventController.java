@@ -2,6 +2,9 @@ package com.jorge.ticketsystem.backend.ticketSystemBack.controllers;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -37,8 +40,8 @@ public class EventController {
     private final EventService eventService;
  
     @GetMapping
-    public ResponseEntity<List<EventResponseDto>> getAllEvents() {
-        List<EventResponseDto> eventos= eventService.findAll();
+    public ResponseEntity<Page<EventResponseDto>> getAllEvents(@PageableDefault(size = 10, sort = "id") Pageable pageable) {
+        Page<EventResponseDto> eventos= eventService.findAll(pageable);
         return ResponseEntity.ok(eventos);
     }
 

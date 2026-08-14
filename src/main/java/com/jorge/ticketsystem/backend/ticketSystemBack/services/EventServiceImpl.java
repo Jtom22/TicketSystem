@@ -6,6 +6,8 @@ import java.util.List;
 
 import java.util.stream.Collectors;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.jorge.ticketsystem.backend.ticketSystemBack.dto.event.EventCreateDto;
@@ -46,11 +48,11 @@ public class EventServiceImpl implements EventService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<EventResponseDto> findAll() {
-        return repository.findAll().stream()
-                .map(eventMapper::toResponseDto)
-                .collect(Collectors.toList());
+    public Page<EventResponseDto> findAll( Pageable pageable) {
+        return repository.findAll(pageable).map(eventMapper::toResponseDto);
+                
     }
+
 
     @Override
     @Transactional(readOnly = true)
