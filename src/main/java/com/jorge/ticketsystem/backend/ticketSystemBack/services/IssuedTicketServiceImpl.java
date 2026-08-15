@@ -135,7 +135,7 @@ public class IssuedTicketServiceImpl implements IssuedTicketService {
     @Transactional(readOnly = true)
     public Page<IssuedTicketResponseDto> getTicketByOrder(Long orderId, Pageable pageable) {
         // TODO Auto-generated method stub
-        if (orderRepository.existsById(orderId)) {
+        if (!orderRepository.existsById(orderId)) {
             throw new EntityNotFoundException("La orden con ID" + orderId + "no existe");
         }
         Page<IssuedTicket> entidadesPage = issuedTicketRepository.findByOrderId(orderId, pageable);

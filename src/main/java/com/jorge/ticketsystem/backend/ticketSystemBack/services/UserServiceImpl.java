@@ -49,9 +49,9 @@ public class UserServiceImpl implements UserService{
 
         // CASO B: Si está INACTIVO, lo reactivamos con los nuevos datos recibidos
         existingUser.setFull_name(dto.fullName());
-        // existingUser.setPassword(passwordEncoder.encode(dto.password())); // Encriptar en producción
-        existingUser.setPassword(dto.password());
-        existingUser.setEnabled(true); // ⬅️ Lo volvemos a dar de alta
+        existingUser.setPassword(passwordEncoder.encode(dto.password()));// Encriptar en producción
+        //existingUser.setPassword(dto.password());
+        existingUser.setEnabled(true); // Lo volvemos a dar de alta
         existingUser.setRoles(roles);
         return userMapper.toResponseDto(userRepository.save(existingUser));
     }

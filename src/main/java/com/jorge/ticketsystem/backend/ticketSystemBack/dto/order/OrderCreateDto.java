@@ -12,9 +12,9 @@ import jakarta.validation.constraints.Positive;
 public record OrderCreateDto(
     
 
-    @NotNull(message = "El monto total es obligatorio")
-    @Positive(message = "El monto total debe ser mayor a cero")
-    Integer totalAmount, // Usamos Integer en vez de int para que valide correctamente el @NotNull
+    // @NotNull(message = "El monto total es obligatorio")
+    // @Positive(message = "El monto total debe ser mayor a cero")
+    // Integer totalAmount, // Usamos Integer en vez de int para que valide correctamente el @NotNull
 
     @NotNull(message = "El ID de usuario es obligatorio")
     Long userId,

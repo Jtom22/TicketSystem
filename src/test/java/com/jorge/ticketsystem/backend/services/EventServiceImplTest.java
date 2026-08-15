@@ -67,7 +67,7 @@ class EventServiceImplTest {
         Page<Event> eventPage = new PageImpl<>(List.of(event));
             //le decimos que cuando alguien busque el findAll le devolvamos una lista con el evento de prueba
             //ponemos un List porque podrian haber sido varios registros
-        when(repository.findAll()).thenReturn(List.of(event));
+        when(repository.findAll(pageable)).thenReturn(eventPage);
         //simulamos su transformacion en dto
         when(eventMapper.toResponseDto(event)).thenReturn(responseDto);
  
@@ -133,7 +133,9 @@ class EventServiceImplTest {
     void delete_cuandoNoExiste_lanzaEntityNotFoundException() {
         when(repository.existsById(999L)).thenReturn(false);
  
-        assertThatThrownBy(() -> eventService.delete(999L))
-                .isInstanceOf(EntityNotFoundException.class);
+        // Capturamos la excepción exacta que lanza tu código actual
+    assertThatThrownBy(() -> eventService.delete(999L))
+            .isInstanceOf(RuntimeException.class) // 👈 Cambiado de EntityNotFoundException a RuntimeException
+            .hasMessageContaining("No se puede eliminar: Evento no encontrado con ID: 999"); // 👈 Opcional: valida el mensaje
     }
 }

@@ -15,7 +15,7 @@ public interface OrderMapper {
     
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "user.id", source = "userId") // Mapea el Long userId al id del objeto User interno
-    @Mapping(target = "total_amount", source = "totalAmount") // Traduce camelCase a snake_case
+    // @Mapping(target = "total_amount", source = "totalAmount") // Traduce camelCase a snake_case
     @Mapping(target = "status", ignore = true) // Lo fija el service: siempre nace como Pending
     @Mapping(target = "expires_at", ignore = true)//Lo ignoramos para evitar inyecciones de tiempo maliciosas
     Order toEntity(OrderCreateDto dto);

@@ -4,6 +4,7 @@ package com.jorge.ticketsystem.backend.ticketSystemBack.services;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import org.springframework.data.domain.Page;
@@ -69,15 +70,18 @@ public class OrderServiceImpl implements OrderService {
         order.setStatus(OrderStatus.PENDIENTE);
         order.setExpires_at(LocalDateTime.now().plusMinutes(MINUTOS_RESERVA));
         Order savedOrder = orderRepository.save(order);
- 
+
+        // El total lo calcula el servidor, sumando el precio REAL de la
+        // categoría de cada asiento.
+        BigDecimal total = BigDecimal.ZERO;
         for (Long seatId : dto.seatIds()) {
-            reserveSeat(seatId, savedOrder);
+            total=total.add(reserveSeat(seatId, savedOrder));
         }
  
         return orderMapper.toResponseDto(savedOrder);
     }
  
-    private void reserveSeat(Long seatId, Order order) {
+    private BigDecimal reserveSeat(Long seatId, Order order) {
         Seat seat = seatRepository.findById(seatId)
                 .orElseThrow(() -> new EntityNotFoundException("No existe el asiento con id " + seatId));
  
@@ -98,6 +102,7 @@ public class OrderServiceImpl implements OrderService {
         } catch (ObjectOptimisticLockingFailureException ex) {
             throw new SeatConflictException(seatId);
         }
+        return seat.getTicketCategory().getPrice();
     }
  
     
