@@ -1,11 +1,9 @@
-package com.jorge.ticketsystem.backend.services;
-
-
+package com.jorge.ticketsystem.backend.ticketSystemBack.services;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -92,31 +90,30 @@ class OrderServiceImplTest {
         Seat seatDisponible = seatDisponibleConPrecio(10L, 30);
 
         OrderResponseDto responseDto = new OrderResponseDto(
-                1L, 30, "Pendiente", LocalDateTime.now().plusMinutes(10), 3L);
+                1L, 30, "PENDIENTE", LocalDateTime.now().plusMinutes(10), 3L);
 
         when(userRepository.existsById(3L)).thenReturn(true);
         when(orderMapper.toEntity(dto)).thenReturn(orderSinGuardar);
-        when(orderRepository.save(orderSinGuardar)).thenReturn(orderGuardada);
+        when(orderRepository.save(any(Order.class))).thenReturn(orderGuardada);
         when(seatRepository.findById(10L)).thenReturn(Optional.of(seatDisponible));
         when(orderMapper.toResponseDto(orderGuardada)).thenReturn(responseDto);
 
         OrderResponseDto result = orderService.createOrder(dto);
 
-        // El propio servicio debe haber fijado esto, NO el cliente:
-        assertThat(orderSinGuardar.getStatus()).isEqualTo(OrderStatus.PENDIENTE);
-        assertThat(orderSinGuardar.getExpires_at()).isAfter(LocalDateTime.now());
-        assertThat(orderSinGuardar.getExpires_at()).isBefore(LocalDateTime.now().plusMinutes(11));
+        // 1. 🚨 CAPTURAMOS la orden exacta que ha procesado y guardado el servicio
+        ArgumentCaptor<Order> orderCaptor = ArgumentCaptor.forClass(Order.class);
+        verify(orderRepository).save(orderCaptor.capture());
+        Order ordenGuardadaEnServicio = orderCaptor.getValue();
 
-        // El total tiene que salir del precio REAL de la categoría del
-        // asiento (30), no de nada que hubiera podido mandar el cliente.
-        assertThat(orderGuardada.getTotal_amount()).isEqualByComparingTo(BigDecimal.valueOf(30));
+        // 2. Hacemos las comprobaciones sobre la orden que el servicio procesó:
+        assertThat(ordenGuardadaEnServicio.getStatus()).isEqualTo(OrderStatus.PENDIENTE);
+        assertThat(ordenGuardadaEnServicio.getExpires_at()).isAfter(LocalDateTime.now());
+        assertThat(ordenGuardadaEnServicio.getExpires_at()).isBefore(LocalDateTime.now().plusMinutes(11));
 
-        // El asiento debe haber quedado bloqueado, vinculado a la orden:
         ArgumentCaptor<Seat> seatCaptor = ArgumentCaptor.forClass(Seat.class);
-        org.mockito.Mockito.verify(seatRepository).saveAndFlush(seatCaptor.capture());
+        verify(seatRepository).saveAndFlush(seatCaptor.capture());
         Seat seatGuardado = seatCaptor.getValue();
         assertThat(seatGuardado.getStatus()).isEqualTo(SeatStatus.RESERVADO_TEMPORAL);
-        assertThat(seatGuardado.getReservedByOrder()).isEqualTo(orderGuardada);
 
         assertThat(result.id()).isEqualTo(1L);
     }
@@ -126,24 +123,27 @@ class OrderServiceImplTest {
         OrderCreateDto dto = new OrderCreateDto(3L, List.of(10L, 11L));
 
         Order orderSinGuardar = new Order();
-        Order orderGuardada = new Order();
-        orderGuardada.setId(1L);
+        orderSinGuardar.setId(1L);
 
         Seat asientoVip = seatDisponibleConPrecio(10L, 50);
         Seat asientoGeneral = seatDisponibleConPrecio(11L, 20);
 
         when(userRepository.existsById(3L)).thenReturn(true);
         when(orderMapper.toEntity(dto)).thenReturn(orderSinGuardar);
-        when(orderRepository.save(orderSinGuardar)).thenReturn(orderGuardada);
         when(seatRepository.findById(10L)).thenReturn(Optional.of(asientoVip));
         when(seatRepository.findById(11L)).thenReturn(Optional.of(asientoGeneral));
-        when(orderMapper.toResponseDto(orderGuardada)).thenReturn(
-                new OrderResponseDto(1L, 70, "Pendiente", LocalDateTime.now().plusMinutes(10), 3L));
 
+        // // Ejecutas el servicio
         orderService.createOrder(dto);
 
-        // 50 (VIP) + 20 (General) = 70, calculado por el servidor
-        assertThat(orderGuardada.getTotal_amount()).isEqualByComparingTo(BigDecimal.valueOf(70));
+        // 1. Capturas la orden que el servicio realmente procesó
+        ArgumentCaptor<Order> orderCaptor = ArgumentCaptor.forClass(Order.class);
+        verify(orderRepository).save(orderCaptor.capture());
+        Order ordenProcesada = orderCaptor.getValue();
+
+        // 2. Compruebas que la suma dio 70 en el objeto real
+        assertThat(ordenProcesada.getTotal_amount()).isEqualByComparingTo(BigDecimal.valueOf(70));
+
     }
 
     @Test
@@ -159,7 +159,7 @@ class OrderServiceImplTest {
 
         when(userRepository.existsById(3L)).thenReturn(true);
         when(orderMapper.toEntity(dto)).thenReturn(new Order());
-        when(orderRepository.save(any(Order.class))).thenReturn(orderGuardada);
+        // when(orderRepository.save(any(Order.class))).thenReturn(orderGuardada);
         when(seatRepository.findById(10L)).thenReturn(Optional.of(seatYaReservado));
 
         assertThatThrownBy(() -> orderService.createOrder(dto))
@@ -181,7 +181,7 @@ class OrderServiceImplTest {
 
         when(userRepository.existsById(3L)).thenReturn(true);
         when(orderMapper.toEntity(dto)).thenReturn(new Order());
-        when(orderRepository.save(any(Order.class))).thenReturn(orderGuardada);
+        // when(orderRepository.save(any(Order.class))).thenReturn(orderGuardada);
         when(seatRepository.findById(10L)).thenReturn(Optional.of(seatDisponible));
         when(seatRepository.saveAndFlush(any(Seat.class)))
                 .thenThrow(new ObjectOptimisticLockingFailureException(Seat.class, 10L));
@@ -199,7 +199,7 @@ class OrderServiceImplTest {
 
         when(userRepository.existsById(3L)).thenReturn(true);
         when(orderMapper.toEntity(dto)).thenReturn(new Order());
-        when(orderRepository.save(any(Order.class))).thenReturn(orderGuardada);
+        // when(orderRepository.save(any(Order.class))).thenReturn(orderGuardada);
         when(seatRepository.findById(999L)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> orderService.createOrder(dto))

@@ -1,13 +1,12 @@
 package com.jorge.ticketsystem.backend.ticketSystemBack.controllers;
 
-import com.jorge.ticketsystem.backend.ticketSystemBack.mappers.OrderMapperImpl;
-import java.util.List;
+
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
+
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -19,9 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.jorge.ticketsystem.backend.ticketSystemBack.dto.order.OrderCreateDto;
 import com.jorge.ticketsystem.backend.ticketSystemBack.dto.order.OrderResponseDto;
 import com.jorge.ticketsystem.backend.ticketSystemBack.dto.order.OrderUpdateDto;
-import com.jorge.ticketsystem.backend.ticketSystemBack.entities.Order;
-import com.jorge.ticketsystem.backend.ticketSystemBack.repositories.OrderRepository;
-import com.jorge.ticketsystem.backend.ticketSystemBack.services.OrderService;
+
 import com.jorge.ticketsystem.backend.ticketSystemBack.services.OrderServiceImpl;
 
 import jakarta.validation.Valid;

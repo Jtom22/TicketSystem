@@ -1,6 +1,7 @@
 package com.jorge.ticketsystem.backend.ticketSystemBack.repositories;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -17,4 +18,6 @@ public interface IssuedTicketRepository extends JpaRepository <IssuedTicket,Long
      // Devuelve una página de boletos para una orden
     Page<IssuedTicket> findByOrderId(Long orderId, Pageable pageable);
     
+    // SELECT * FROM issued_tickets WHERE qr_code_token = ?
+    Optional<IssuedTicket> findByQrCodeToken(String qr_code_token);
 }

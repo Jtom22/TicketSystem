@@ -1,4 +1,4 @@
-package com.jorge.ticketsystem.backend.scheduling;
+package com.jorge.ticketsystem.backend.ticketSystemBack.scheduling;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;

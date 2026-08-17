@@ -114,8 +114,8 @@ Esta es la parte más importante del sistema — el motivo por el que un asiento
    CREATE DATABASE db_ticketsystem;
    ```
 
-2. Copia `application.properties.example` (si existe) o crea `src/main/resources/application.properties` con:
-   ```properties
+2. Copia `src/main/resources/application.properties` con:
+   
    spring.datasource.url=jdbc:mysql://localhost:3306/db_ticketsystem
    spring.datasource.username=tu_usuario
    spring.datasource.password=tu_password
@@ -124,8 +124,7 @@ Esta es la parte más importante del sistema — el motivo por el que un asiento
 
    jwt.secret=UNA_CADENA_LARGA_Y_ALEATORIA_DE_AL_MENOS_64_CARACTERES
    jwt.expiration-ms=86400000
-   ```
-   > Genera el `jwt.secret` con, por ejemplo: `openssl rand -base64 64`
+
 
 3. Inserta los roles base (todavía no hay migraciones automáticas):
    ```sql
@@ -153,7 +152,7 @@ Esta es la parte más importante del sistema — el motivo por el que un asiento
 | `POST` | `/api/v1/issued-tickets` | Autenticado |
 | `GET` / `PATCH` / `DELETE` | `/api/v1/users/**` | `ADMIN` |
 
-*(Lista no exhaustiva — la referencia completa y siempre actualizada está en Swagger, ver abajo)*
+
 
 > **Nota sobre `POST /api/v1/orders`:** el body solo lleva `userId` y `seatIds`. El `totalAmount` (sumando el precio real de la categoría de cada asiento), el `status` inicial (`Pending`) y la fecha de expiración de la reserva los calcula el servidor — no se envían en la petición. Así nadie puede manipular cuánto paga ni cuánto dura su reserva.
 

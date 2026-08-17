@@ -1,4 +1,4 @@
-package com.jorge.ticketsystem.backend.controllers;
+package com.jorge.ticketsystem.backend.ticketSystemBack.controllers;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verifyNoInteractions;
@@ -13,14 +13,18 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
+import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.jorge.ticketsystem.backend.ticketSystemBack.TicketSystemBackApplication;
 import com.jorge.ticketsystem.backend.ticketSystemBack.controllers.EventController;
 import com.jorge.ticketsystem.backend.ticketSystemBack.dto.event.EventCreateDto;
 import com.jorge.ticketsystem.backend.ticketSystemBack.dto.event.EventResponseDto;
@@ -36,8 +40,9 @@ import com.jorge.ticketsystem.backend.ticketSystemBack.services.EventService;
 //  de Spring Security para este test — probamos el controller en aislado,
 //  sin necesitar montar JwtAuthenticationFilter/SecurityConfig enteros.
  
-@org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest(EventController.class)
-@org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc(addFilters = false)
+@WebMvcTest(controllers = EventController.class)
+@ContextConfiguration(classes = TicketSystemBackApplication.class)
+@AutoConfigureMockMvc(addFilters = false)
 class EventControllerTest {
 
     @Autowired

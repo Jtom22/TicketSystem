@@ -1,6 +1,9 @@
 package com.jorge.ticketsystem.backend.ticketSystemBack.entities;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -21,7 +24,7 @@ public class IssuedTicket extends Auditable{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String qr_code_token;
+    private String qrCodeToken;
 
     @ManyToOne
     @JoinColumn(name = "order_id", nullable= false)
@@ -31,6 +34,9 @@ public class IssuedTicket extends Auditable{
     @JoinColumn(name = "seat_id", nullable=false, unique = true)
     private Seat seat;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private IssuedTicketStatus status; // EJEMPLO: VALIDO, USADO, CANCELADO
 
 
 

@@ -1,5 +1,7 @@
 package com.jorge.ticketsystem.backend.ticketSystemBack.services;
 
+import java.util.UUID;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -8,12 +10,17 @@ import org.springframework.transaction.annotation.Transactional;
 import com.jorge.ticketsystem.backend.ticketSystemBack.dto.issuedTicket.IssuedTicketCreateDto;
 import com.jorge.ticketsystem.backend.ticketSystemBack.dto.issuedTicket.IssuedTicketResponseDto;
 import com.jorge.ticketsystem.backend.ticketSystemBack.dto.issuedTicket.IssuedTicketUpdateDto;
+import com.jorge.ticketsystem.backend.ticketSystemBack.dto.issuedTicket.IssuedTicketValidationDto;
+import com.jorge.ticketsystem.backend.ticketSystemBack.dto.issuedTicket.QrResponseDto;
+import com.jorge.ticketsystem.backend.ticketSystemBack.entities.Event;
 import com.jorge.ticketsystem.backend.ticketSystemBack.entities.IssuedTicket;
+import com.jorge.ticketsystem.backend.ticketSystemBack.entities.IssuedTicketStatus;
 import com.jorge.ticketsystem.backend.ticketSystemBack.entities.Order;
 import com.jorge.ticketsystem.backend.ticketSystemBack.entities.Seat;
 import com.jorge.ticketsystem.backend.ticketSystemBack.entities.SeatStatus;
 import com.jorge.ticketsystem.backend.ticketSystemBack.exception.SeatUnavailableException;
 import com.jorge.ticketsystem.backend.ticketSystemBack.mappers.IssuedTicketMapper;
+import com.jorge.ticketsystem.backend.ticketSystemBack.repositories.EventRepository;
 import com.jorge.ticketsystem.backend.ticketSystemBack.repositories.IssuedTicketRepository;
 import com.jorge.ticketsystem.backend.ticketSystemBack.repositories.OrderRepository;
 import com.jorge.ticketsystem.backend.ticketSystemBack.repositories.SeatRepository;
@@ -30,6 +37,7 @@ public class IssuedTicketServiceImpl implements IssuedTicketService {
     private final IssuedTicketMapper issuedTicketMapper;
     private final OrderRepository orderRepository;
     private final SeatRepository seatRepository;
+    private final EventRepository eventRepository;
 
     @Override
     @Transactional(readOnly = true)
@@ -47,7 +55,7 @@ public class IssuedTicketServiceImpl implements IssuedTicketService {
     }
 
     @Override
-    @Transactional(readOnly = true)
+    @Transactional
     public IssuedTicketResponseDto create(IssuedTicketCreateDto dto) {
         // 1. Buscamos y validamos la Orden en su repositorio
         Order orden = orderRepository.findById(dto.orderId())
@@ -70,32 +78,39 @@ public class IssuedTicketServiceImpl implements IssuedTicketService {
         // El @Scheduled que libera reservas caducadas corre cada minuto — sin esto,
         // habría una ventana de hasta 60s en la que la reserva ya venció de verdad
         // pero el status en BD seguía diciendo RESERVADO_TEMPORAL, dejando colarse
-        // una compra fuera de plazo. actualmente son 10 min lo que tienes para realizar la compra
+        // una compra fuera de plazo. actualmente son 10 min lo que tienes para realizar
+        // la compra
         if (asiento.getReservedByOrder() != null
                 && asiento.getReservedByOrder().getExpires_at().isBefore(java.time.LocalDateTime.now())) {
             throw new SeatUnavailableException(asiento.getId());
         }
 
         // 2.2. Comprobamos que la reserva pertenece a la MISMA orden que está
-        // emitiendo el ticket, no a otra. Sin esto, alguien podría emitir un
+        // emitiendo el ticket. Sin esto, alguien podría emitir un
         // ticket sobre un asiento que otra persona tiene reservado ahora mismo.
         if (asiento.getReservedByOrder() == null
                 || !asiento.getReservedByOrder().getId().equals(orden.getId())) {
             throw new SeatUnavailableException(asiento.getId());
         }
 
-        // 3. Convertimos el DTO a Entidad mediante MapStruct
+        asiento.setStatus(SeatStatus.OCUPADO);
+        asiento.setReservedByOrder(null);
+        seatRepository.save(asiento);
+
+        // 3. Convertimos el dto a Entidad usando MapStruct
         IssuedTicket ticketEntity = issuedTicketMapper.toEntity(dto);
 
-        // 4. Inyectamos los objetos relacionales validados a nuestra entidad
+        // 4. Ponemos los valores de la orden y el asiento al cual se refiere este
+        // ticket
         ticketEntity.setOrder(orden);
         ticketEntity.setSeat(asiento);
-        issuedTicketRepository.save(ticketEntity);
+        ticketEntity.setQr_code_token(UUID.randomUUID().toString());
+        ticketEntity.setStatus(IssuedTicketStatus.VALIDO);
 
-        // 5. Guardamos de forma segura en MySQL
+        // 5. Guardamos en bbdd
         IssuedTicket guardado = issuedTicketRepository.save(ticketEntity);
 
-        // 6. Retornamos el DTO de respuesta estructurado como Record
+        // 6. Devolvemos el DTO de respuesta estructurado como record
         return issuedTicketMapper.toResponseDto(guardado);
     }
 
@@ -149,6 +164,43 @@ public class IssuedTicketServiceImpl implements IssuedTicketService {
     public Page<IssuedTicketResponseDto> getAllTickets(Pageable pageable) {
         return issuedTicketRepository.findAll(pageable).map(issuedTicketMapper::toResponseDto);
 
+    }
+
+    //Validar Qr, control de Entrada de evento habitual
+    @Override
+    @Transactional
+    public QrResponseDto validateQr(IssuedTicketValidationDto scanDto) {
+        // 1. Buscamos el ticket por el token escaneado
+        IssuedTicket ticket = issuedTicketRepository.findByQrCodeToken(scanDto.qrCodeToken())
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "Entrada no válida: El código QR no existe en el sistema."));
+
+
+        // 2. Desde el codigo qr sacamos cual es el evento que tiene asociado
+        Long ticketEventId = ticket.getSeat().getTicketCategory().getEvent().getId();
+        // Event ActualEvent= eventRepository.findById(scanDto.eventoActual().getId())
+        //             .orElseThrow(()->new EntityNotFoundException("Evento no existente en la bbdd"));
+
+        if (!ticketEventId.equals(scanDto.eventoActual().getId())) {
+            throw new IllegalStateException("¡ENTRADA INVÁLIDA! Este ticket pertenece a otro evento.");
+        }
+
+        // 3. Comprobamos si el ticket ha sido escaneado o cancelado
+        if (ticket.getStatus() == IssuedTicketStatus.USADO) {
+            throw new IllegalStateException("¡ALERTA! Este código QR ya fue utilizado anteriormente.");
+        }
+
+        if (ticket.getStatus() == IssuedTicketStatus.CANCELADO) {
+            throw new IllegalStateException("Esta entrada ha sido cancelada.");
+        }
+
+        // 4. Cambiamos estado a USADO (quemamos entrada)
+        ticket.setStatus(IssuedTicketStatus.USADO);
+        issuedTicketRepository.save(ticket);
+
+        // 5. Retornamos confirmación del acceso
+        return new QrResponseDto("Bienvenido al evento de "+ scanDto.eventoActual().getTitle(), ticket.getOrder(), ticket.getSeat());
+       
     }
 
 }

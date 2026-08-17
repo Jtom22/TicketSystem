@@ -1,4 +1,4 @@
-package com.jorge.ticketsystem.backend.ticketsystem;
+package com.jorge.ticketsystem.backend.ticketSystemBack.ticketsystem;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

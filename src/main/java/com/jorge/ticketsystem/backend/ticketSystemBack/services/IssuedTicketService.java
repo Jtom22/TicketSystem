@@ -8,6 +8,10 @@ import org.springframework.data.domain.Pageable;
 import com.jorge.ticketsystem.backend.ticketSystemBack.dto.issuedTicket.IssuedTicketCreateDto;
 import com.jorge.ticketsystem.backend.ticketSystemBack.dto.issuedTicket.IssuedTicketResponseDto;
 import com.jorge.ticketsystem.backend.ticketSystemBack.dto.issuedTicket.IssuedTicketUpdateDto;
+import com.jorge.ticketsystem.backend.ticketSystemBack.dto.issuedTicket.IssuedTicketValidationDto;
+import com.jorge.ticketsystem.backend.ticketSystemBack.dto.issuedTicket.QrResponseDto;
+
+import jakarta.validation.Valid;
 
 public interface IssuedTicketService {
 
@@ -31,6 +35,8 @@ public interface IssuedTicketService {
 
     // 7. Eliminar / Cancelar un ticket emitido
     void delete(Long id);
+
+    QrResponseDto validateQr(IssuedTicketValidationDto scanDto);
 
 
 }

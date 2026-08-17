@@ -1,5 +1,4 @@
-package com.jorge.ticketsystem.backend.controllers;
-
+package com.jorge.ticketsystem.backend.ticketSystemBack.controllers;
 
 
 import static org.mockito.ArgumentMatchers.any;
@@ -14,17 +13,21 @@ import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
+import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.jorge.ticketsystem.backend.ticketSystemBack.TicketSystemBackApplication;
 import com.jorge.ticketsystem.backend.ticketSystemBack.controllers.AuthController;
 import com.jorge.ticketsystem.backend.ticketSystemBack.dto.auth.LoginRequestDto;
 import com.jorge.ticketsystem.backend.ticketSystemBack.dto.auth.RegisterRequestDto;
@@ -33,16 +36,17 @@ import com.jorge.ticketsystem.backend.ticketSystemBack.security.CustomUserDetail
 import com.jorge.ticketsystem.backend.ticketSystemBack.security.JwtService;
 import com.jorge.ticketsystem.backend.ticketSystemBack.services.UserService;
 
-@org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest(AuthController.class)
-@org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc(addFilters = false)
+@WebMvcTest(AuthController.class)
+@AutoConfigureMockMvc(addFilters = false)
+@ContextConfiguration(classes = TicketSystemBackApplication.class)
 class AuthControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
 
-    @Autowired
-    private ObjectMapper objectMapper;
-
+    //Deja esto asi o el test falla
+    private final ObjectMapper objectMapper = new ObjectMapper();
+    
     @MockitoBean
     private UserService userService;
 

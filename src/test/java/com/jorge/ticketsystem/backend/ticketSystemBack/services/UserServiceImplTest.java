@@ -1,4 +1,4 @@
-package com.jorge.ticketsystem.backend.services;
+package com.jorge.ticketsystem.backend.ticketSystemBack.services;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;

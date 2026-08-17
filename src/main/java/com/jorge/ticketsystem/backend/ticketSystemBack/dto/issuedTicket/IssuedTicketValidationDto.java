@@ -2,8 +2,7 @@ package com.jorge.ticketsystem.backend.ticketSystemBack.dto.issuedTicket;
 
 import com.jorge.ticketsystem.backend.ticketSystemBack.entities.Event;
 
-public record IssuedTicketUpdateDto(
-    String qrCodeToken
-    
-
+public record IssuedTicketValidationDto(
+    String qrCodeToken,
+    Event eventoActual
 ) {}

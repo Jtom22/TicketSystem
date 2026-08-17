@@ -1,4 +1,6 @@
-package com.jorge.ticketsystem.backend.controllers;
+package com.jorge.ticketsystem.backend.ticketSystemBack.controllers;
+
+
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -14,34 +16,51 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
+import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.FilterType;
+import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.jorge.ticketsystem.backend.ticketSystemBack.controllers.OrderController;
+import com.jorge.ticketsystem.backend.ticketSystemBack.TicketSystemBackApplication;
+import com.jorge.ticketsystem.backend.ticketSystemBack.controllers.EventController;
+import com.jorge.ticketsystem.backend.ticketSystemBack.controllers.testSecurityConfig.TestSecurityConfig;
 import com.jorge.ticketsystem.backend.ticketSystemBack.dto.order.OrderCreateDto;
 import com.jorge.ticketsystem.backend.ticketSystemBack.dto.order.OrderResponseDto;
 import com.jorge.ticketsystem.backend.ticketSystemBack.exception.SeatUnavailableException;
+import com.jorge.ticketsystem.backend.ticketSystemBack.security.JwtAuthenticationFilter;
+import com.jorge.ticketsystem.backend.ticketSystemBack.security.JwtService;
 import com.jorge.ticketsystem.backend.ticketSystemBack.services.OrderServiceImpl;
 
-@org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest(OrderController.class)
-@org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc(addFilters = false)
+
+@WebMvcTest(controllers = OrderController.class) // Quitamos clases globales, solo probamos este controlador
+@Import(TestSecurityConfig.class) // <-- IMPORTAMOS LA SEGURIDAD LIMPIA DE PRUEBAS
+@AutoConfigureMockMvc(addFilters = false)
+
 class OrderControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
 
     @Autowired
-    private ObjectMapper objectMapper;
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     // OrderController inyecta la clase concreta OrderServiceImpl (no una
     // interfaz), así que mockeamos ese mismo tipo aquí.
     @MockitoBean
     private OrderServiceImpl orderService;
+
+        @MockitoBean
+    private JwtService jwtService;
 
     @Test
     void createOrder_conBodyValido_devuelve201() throws Exception {
@@ -61,7 +80,6 @@ class OrderControllerTest {
 
     @Test
     void createOrder_sinAsientosSeleccionados_devuelve400() throws Exception {
-        // seatIds vacío viola @NotEmpty de OrderCreateDto
         String jsonInvalido = """
                 {"userId":3,"seatIds":[]}
                 """;
