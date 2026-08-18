@@ -68,16 +68,18 @@ public class OrderServiceImpl implements OrderService {
         order.setStatus(OrderStatus.PENDIENTE);
         order.setExpires_at(LocalDateTime.now().plusMinutes(MINUTOS_RESERVA));
 
+        //para tener un order que su id no se a nulo
+        Order savedOrder = orderRepository.save(order);
         // El total lo calcula el servidor, sumando el precio REAL de la
         // categoría de cada asiento.
         BigDecimal total = BigDecimal.ZERO;
         for (Long seatId : dto.seatIds()) {
             // Le pasamos 'order' (la que se está creando) para asociar el asiento
-            total = total.add(reserveSeat(seatId, order));
+            total = total.add(reserveSeat(seatId, order));//reserve seat devuelve BigDecimal
         }
 
         order.setTotal_amount(total);
-        Order savedOrder = orderRepository.save(order);
+        orderRepository.save(savedOrder);   // segundo save, para guardar el total amount 
 
         return orderMapper.toResponseDto(savedOrder);
     }
@@ -95,9 +97,9 @@ public class OrderServiceImpl implements OrderService {
         seat.setReservedByOrder(order);
 
         try {
-            // saveAndFlush() (no save()) es importante aquí: fuerza el UPDATE
-            // inmediato en BD, para que si hay conflicto de @Version salte
-            // en ESTE punto del bucle (y sepamos qué asiento fue exactamente),
+            // saveAndFlush() (no save()) es importante aqui se fuerza el UPDATE
+            // inmediato en bbdd , para que si hay conflicto de @Version salte
+            // en ESTE punto del bucle (y sepamos que asiento ha sido exactamente),
             // en vez de acumularse y saltar todo junto al final de la transacción.
             seatRepository.saveAndFlush(seat);
         } catch (ObjectOptimisticLockingFailureException ex) {

@@ -104,7 +104,7 @@ public class IssuedTicketServiceImpl implements IssuedTicketService {
         // ticket
         ticketEntity.setOrder(orden);
         ticketEntity.setSeat(asiento);
-        ticketEntity.setQr_code_token(UUID.randomUUID().toString());
+        ticketEntity.setQrCodeToken(UUID.randomUUID().toString());
         ticketEntity.setStatus(IssuedTicketStatus.VALIDO);
 
         // 5. Guardamos en bbdd
